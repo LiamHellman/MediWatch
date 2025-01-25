@@ -5,6 +5,27 @@ document.addEventListener("DOMContentLoaded", () => {
     loadQueueData(mockPatients, triageLevel);
     loadTrivia();
 
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    const currentMode = localStorage.getItem("darkMode");
+
+    // Set initial icon based on current mode
+    if (currentMode === "enabled") {
+        document.body.classList.add("dark-mode");
+        darkModeToggle.textContent = "☀️"; // Sun icon for light mode
+    } else {
+        darkModeToggle.textContent = "🌙"; // Moon/star icon for dark mode
+    }
+
+    darkModeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+        const mode = document.body.classList.contains("dark-mode") ? "enabled" : "disabled";
+        localStorage.setItem("darkMode", mode);
+
+        // Update the icon
+        darkModeToggle.textContent = mode === "enabled" ? "☀️" : "🌙";
+    });
+
     document.getElementById("next-trivia").addEventListener("click", loadTrivia);
 });
 
@@ -19,7 +40,7 @@ function generateMockPatients() {
             name: names[Math.floor(Math.random() * names.length)],
             triageCategory: triageLevels[Math.floor(Math.random() * triageLevels.length)],
             phase: phases[Math.floor(Math.random() * phases.length)],
-            estimatedWait: Math.floor(Math.random() * 60) + 5, // Random wait time between 5-65 minutes
+            estimatedWait: Math.floor(Math.random() * 60) + 5,
         };
         patients.push(patient);
     }
