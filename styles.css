@@ -1,12 +1,19 @@
 :root {
-    --bg-color: #121212;
-    --text-color: #EDEDED;
-    --card-bg: #181818;
-    --card-hover-bg: #252525;
-    --primary-color: #BB86FC;
-    --secondary-color: #03DAC6;
+    --bg-color: #242424;
+    --text-color: #E0E0E0;
+    --card-bg: #242424;
+    --card-hover-bg: #451B60;
+    --primary-color: #933DC9;
+    --secondary-color: #933DC9;
 }
-
+body.dark-mode {
+    --bg-color: #E0E0E0;
+    --text-color: #242424;
+    --card-bg: #;
+    --card-hover-bg: #DEC4EF;
+    --primary-color: #933DC9;
+    --secondary-color: #933DC9;
+}
 body {
     font-family: 'Arial', sans-serif;
     background-color: var(--bg-color);
@@ -123,14 +130,7 @@ main {
 }
 
 /* Dark Mode Overrides */
-body.dark-mode {
-    --bg-color: #FFFFFF;
-    --text-color: #121212;
-    --card-bg: #F0F0F0;
-    --card-hover-bg: #E0E0E0;
-    --primary-color: #6200EE;
-    --secondary-color: #018786;
-}
+
 
 /* Footer */
 footer {
