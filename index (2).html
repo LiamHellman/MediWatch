@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ED Queue Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <button id="dark-mode-toggle" aria-label="Toggle Dark Mode">🌙</button>
+    <div class="container">
+        <header>
+            <h1>Emergency Department Tracker</h1>
+        </header>
+        <main>
+            <section id="queue-section">
+                <div class="card">
+                    <h2>Your Triage Level: <span id="triage-level">Yellow</span></h2>
+                    <div class="queue-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Waiting</span>
+                            <span id="total-waiting" class="stat-value">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Estimated Time</span>
+                            <span id="estimated-time" class="stat-value">-</span>
+                        </div>
+                    </div>
+                    <div class="queue-info">
+                        <h3>Average Wait Time: <span id="wait-time">Loading...</span></h3>
+                        <ul id="queue-list" class="patient-list"></ul>
+                    </div>
+                </div>
+            </section>
+            <section id="trivia-section">
+                <div class="card">
+                    <h2>Health Trivia</h2>
+                    <p id="trivia-question">Loading trivia...</p>
+                    <button id="next-trivia" class="btn">Next Trivia</button>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2025 Emergency Department Tracker</p>
+        </footer>
+    </div>
+</body>
+</html>
