@@ -3,6 +3,7 @@ from app.patients import generate_mock_patient
 from datetime import datetime, timedelta
 import random
 import json
+from app.enums import TriageCategory  # Import the enum
 
 def populate_database(num_patients=50):
     db = PatientDB(db_name='ed_tracker.db')
@@ -22,9 +23,11 @@ def populate_database(num_patients=50):
             minutes_ago = random.randint(0, 12 * 60)
             arrival_time = now - timedelta(minutes=minutes_ago)
             
+            # 🚨 FORCE ALL PATIENTS TO TRIAGE CATEGORY 3 (URGENT)
             patient = generate_mock_patient(
                 arrival_time=arrival_time,
-                time_elapsed=minutes_ago
+                time_elapsed=minutes_ago,
+                triage_category=TriageCategory.URGENT  # Explicitly set category
             )
             
             conn.execute('''INSERT INTO patients 
@@ -32,13 +35,13 @@ def populate_database(num_patients=50):
                         VALUES (?, ?, ?, ?, ?, ?)''',
                         (patient.id,
                          patient.arrival_time.isoformat(),
-                         patient.triage_category.value,
+                         patient.triage_category.value,  # Store enum value
                          json.dumps(patient.queue_position),
                          json.dumps(db.serialize_status(patient.status)),
                          patient.time_elapsed))
         
         conn.commit()
-    print(f"Added {num_patients} patients to database")
+    print(f"Added {num_patients} patients to database (all category 3)")
 
 if __name__ == "__main__":
     populate_database()

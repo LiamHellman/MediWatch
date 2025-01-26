@@ -32,40 +32,56 @@ function formatWaitTime(minutes) {
     return `${hours}h ${remainingMinutes}m`;
 }
 
-function getRandomWaitTime(category) {
-    // REMOVE THE MULTIPLIER
+function generateIncrementalWaitTimes(patients) {
     const waitRanges = {
-        1: [10, 30],       // Resuscitation: 10-30 mins
-        2: [30, 90],       // Emergent: 30-90 mins
-        3: [90, 180],      // Urgent: 90-180 mins
-        4: [180, 360],     // Less Urgent: 3-6 hours
-        5: [360, 720]      // Non-Urgent: 6-12 hours
+        1: [10, 30],       // Resuscitation
+        2: [30, 90],       // Emergent
+        3: [90, 180],      // Urgent
+        4: [180, 360],     // Less Urgent
+        5: [360, 720]      // Non-Urgent
     };
+
+    // Sort patients by triage (ascending) and arrival time (FIFO)
+    patients.sort((a, b) => {
+        if (a.triage_category !== b.triage_category) {
+            return a.triage_category - b.triage_category; // Higher priority first
+        }
+        return new Date(a.arrival_time) - new Date(b.arrival_time); // Earlier arrivals first
+    });
+
+    let cumulativeTime = 0;
     
-    const [min, max] = waitRanges[category];
-    return Math.floor(Math.random() * (max - min + 1) + min); // No multiplier
+    patients.forEach(patient => {
+        const [min, max] = waitRanges[patient.triage_category];
+        // First patient in queue: random time within category
+        // Subsequent patients: previous cumulative time + new increment
+        const increment = Math.floor(Math.random() * (max - min + 1)) + min;
+        cumulativeTime = cumulativeTime === 0 ? increment : cumulativeTime + increment;
+        patient.targetWaitTime = cumulativeTime;
+    });
+
+    return patients;
 }
 
 function processQueue() {
     if (!simulatedPatients.length) return;
 
-    // Increment wait time for all patients
     simulatedPatients.forEach(patient => {
         patient.time_elapsed += 1;
     });
 
-    // Sort by remaining time ascending (patients closest to 0 go first)
+    // Sort by remaining time (patients closest to 0 first)
     simulatedPatients.sort((a, b) => {
         const aRemaining = a.targetWaitTime - a.time_elapsed;
         const bRemaining = b.targetWaitTime - b.time_elapsed;
-        return aRemaining - bRemaining; // 🚨 Sort by least time left
+        return aRemaining - bRemaining;
     });
 
-    // Remove ALL patients who have reached/passed their target time
+    // Remove all eligible patients (remaining time <= 0)
     const remainingPatients = simulatedPatients.filter(
         patient => patient.time_elapsed < patient.targetWaitTime
     );
-    simulatedPatients = remainingPatients; // Update the queue
+    simulatedPatients = remainingPatients;
 
     updateQueueUI();
     document.getElementById("total-waiting").textContent = simulatedPatients.length;
@@ -78,8 +94,10 @@ async function updateQueue() {
         queueData = await response.json();
         simulatedPatients = queueData.patients;
         
+        // Reset timers and generate staggered targetWaitTime
+        simulatedPatients = generateIncrementalWaitTimes(simulatedPatients);
         simulatedPatients.forEach(patient => {
-            patient.targetWaitTime = getRandomWaitTime(patient.triage_category);
+            patient.time_elapsed = 0; // Start fresh
         });
         
         updateQueueUI();
