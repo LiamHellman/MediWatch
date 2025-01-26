@@ -167,3 +167,158 @@ footer {
     color: var(--primary-color);
 }
 
+.text-center {
+    text-align: center;
+}
+
+.patient-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.patient-id {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.patient-id {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.wait-time {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin-left: 1rem;
+}
+
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.patient-info {
+    flex: 1;
+    text-align: center;
+}
+
+.patient-id {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.wait-time {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin-left: 1rem;
+}
+
+.queue-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.patient-info {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+}
+
+.patient-id {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.wait-time {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    z-index: 2;
+    position: relative;
+}
+.queue-item {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+}
+
+.patient-info {
+    width: 100%;
+    text-align: center;
+}
+
+.patient-id {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.wait-time {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    position: absolute;
+    right: 1rem;
+}
+
+.queue-item {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+}
+
+.position-number {
+    position: absolute;
+    left: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.patient-info {
+    width: 100%;
+    text-align: center;
+}
+
+.patient-id {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.wait-time {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    position: absolute;
+    right: 1rem;
+}
