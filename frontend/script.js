@@ -116,15 +116,20 @@ function updateQueueUI() {
     const waitTimeEl = document.getElementById("wait-time");
     
     document.getElementById("total-waiting").textContent = simulatedPatients.length;
-    const longestWait = Math.max(...simulatedPatients.map(p => p.time_elapsed));
-    document.getElementById("estimated-time").textContent = formatWaitTime(longestWait);
     
     // Sort patients by remaining time (ascending)
     const sortedPatients = [...simulatedPatients].sort((a, b) => {
         const aRemaining = a.targetWaitTime - a.time_elapsed;
         const bRemaining = b.targetWaitTime - b.time_elapsed;
-        return aRemaining - bRemaining; // Least time left first
+        return aRemaining - bRemaining;
     });
+    
+    // Get the last patient's remaining wait time
+    const lastPatientWait = sortedPatients.length > 0 ? 
+        Math.max(0, sortedPatients[sortedPatients.length - 1].targetWaitTime - sortedPatients[sortedPatients.length - 1].time_elapsed) : 
+        0;
+    
+    document.getElementById("estimated-time").textContent = formatWaitTime(lastPatientWait);
     
     queueList.innerHTML = sortedPatients
         .map((patient, index) => {
