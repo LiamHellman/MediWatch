@@ -3,8 +3,9 @@
     --text-color: #36151e;
     --card-bg: #f0ebd8;
     --card-hover-bg: #f1e0c5;
-    --primary-color: #7b6d8d;
-    --secondary-color: #f0ebd8;
+    --primary-color: #8b6d9c;
+    --secondary-color: #a799b7;
+    --queue-color: #f0ebd8;
 }
 
 body.dark-mode {
@@ -14,6 +15,7 @@ body.dark-mode {
     --card-hover-bg: #3d3d3d;
     --primary-color: #8b6d9c;
     --secondary-color: #a799b7;
+    --queue-color: #2d2d2d;
 }
 
 body {
@@ -106,7 +108,7 @@ main {
     border: 1px solid var(--secondary-color);
     border-radius: 8px;
     margin-bottom: 10px;
-    background-color: #363636;
+    background-color: var(--queue-color);
     color: var(--text-color);
 }
 
@@ -145,7 +147,7 @@ footer {
 }
 
 .stat-item {
-    background: #363636;
+    background: var(--card-bg);
     padding: 1rem;
     border-radius: 8px;
     text-align: center;
@@ -174,7 +176,7 @@ footer {
     display: flex;
     align-items: center;
     border-radius: 8px;
-    background-color: #363636;
+    background-color: var(--card-bg);
 }
 
 .position-number {
@@ -251,6 +253,7 @@ body.dark-mode .logo-dark {
     background: #ff4444;
     transform: scale(1.1);
 }
+<<<<<<< HEAD
 #wordle-section {
     text-align: center;
 }
@@ -304,3 +307,19 @@ body.dark-mode .logo-dark {
     color: var(--primary-color);
     font-weight: bold;
 }
+=======
+
+.last-patient {
+    background-color: #926AA0 !important;
+}
+
+.last-patient .patient-id,
+.last-patient .wait-time {
+    color: white !important;
+}
+
+.last-patient .position-number {
+    color: white !important;
+    border-color: white !important;
+}
+>>>>>>> bde40d14a969fe8bc3f8a150f26dbe0bdb47499d
