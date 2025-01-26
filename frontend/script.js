@@ -150,16 +150,15 @@ async function loadTrivia() {
     const triviaQuestionElement = document.getElementById("trivia-question");
 
     try {
-        const response = await fetch("https://opentdb.com/api.php?amount=1&type=multiple");
-        if (!response.ok) throw new Error("Failed to fetch trivia");
-        
-        const data = await response.json();
-        if (data.results?.length > 0) {
-            triviaQuestionElement.textContent = decodeHTML(data.results[0].question);
-        }
+        // Fetch a random trivia fact
+        const response = await fetch("http://numbersapi.com/random/trivia");
+        if (!response.ok) throw new Error("Failed to fetch fun fact");
+
+        const fact = await response.text(); // Get plain text response
+        triviaQuestionElement.textContent = fact; // Display the fact
     } catch (error) {
-        console.error("Error fetching trivia:", error);
-        triviaQuestionElement.textContent = "Failed to load trivia. Please try again.";
+        console.error("Error fetching fun fact:", error);
+        triviaQuestionElement.textContent = "Failed to load fun fact. Please try again.";
     }
 }
 
