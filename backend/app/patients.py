@@ -1,9 +1,10 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import random
 
-from enums import PatientPhase, InvestigationState, TriageCategory
-
+from .enums import PatientPhase, InvestigationState, TriageCategory  # Add the dot
+from typing import TYPE_CHECKING
 
 @dataclass
 class Patient:
@@ -134,3 +135,21 @@ def generate_mock_patient(**kwargs):
     }
     
     return Patient(**patient_data)
+# Add these methods to your Patient class in patients.py
+if TYPE_CHECKING:
+    from database import PatientDB
+
+# Then modify the methods like this:
+def save(self, db: 'PatientDB'):
+    """Save patient to database"""
+    db.add_patient(self)
+
+@staticmethod
+def get_all(db: 'PatientDB') -> list['Patient']:
+    """Retrieve all patients from database"""
+    return db.get_all_patients()
+
+@staticmethod
+def get_by_id(db: 'PatientDB', patient_id: str) -> 'Patient':
+    """Retrieve a patient by ID"""
+    return db.get_patient(patient_id)
