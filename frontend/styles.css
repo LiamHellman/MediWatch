@@ -2,18 +2,18 @@
     --bg-color: #f1e0c5;
     --text-color: #36151e;
     --card-bg: #f0ebd8;
-    --card-hover-bg: #593f62;
+    --card-hover-bg: #f1e0c5;
     --primary-color: #7b6d8d;
     --secondary-color: #f0ebd8;
 }
 
 body.dark-mode {
-    --bg-color: #242424;
-    --text-color: #f1e0c5;
-    --card-bg: #36151e;
-    --card-hover-bg: #593f62;
-    --primary-color: #7b6d8d;
-    --secondary-color: #f0ebd8;
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --card-bg: #2d2d2d;
+    --card-hover-bg: #3d3d3d;
+    --primary-color: #8b6d9c;
+    --secondary-color: #a799b7;
 }
 
 body {
@@ -33,13 +33,15 @@ body {
     padding: 20px;
     background-color: var(--card-bg);
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     overflow: hidden;
 }
 
 header {
     text-align: center;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 header h1 {
@@ -70,10 +72,10 @@ main {
 }
 
 .card {
-    background-color: #7b6d8d;
+    background-color: var(--card-bg);
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
 }
 
@@ -85,7 +87,7 @@ main {
 .card h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
-    color: #000000;
+    color: var(--primary-color);
 }
 
 .card h3 {
@@ -104,7 +106,7 @@ main {
     border: 1px solid var(--secondary-color);
     border-radius: 8px;
     margin-bottom: 10px;
-    background-color: var(--card-bg);
+    background-color: #363636;
     color: var(--text-color);
 }
 
@@ -132,7 +134,7 @@ footer {
     text-align: center;
     margin-top: 20px;
     font-size: 0.9rem;
-    color: #666;
+    color: #888;
 }
 
 .queue-stats {
@@ -143,25 +145,25 @@ footer {
 }
 
 .stat-item {
-    background: var(--card-bg);
+    background: #363636;
     padding: 1rem;
     border-radius: 8px;
     text-align: center;
-    border: 2px solid var(--card-hover-bg);
+    border: 2px solid var(--primary-color);
 }
 
 .stat-label {
     display: block;
     font-size: 0.875rem;
-    color: var(--card-hover-bg);
-    opacity: 0.8;
+    color: var(--secondary-color);
+    opacity: 0.9;
 }
 
 .stat-value {
     display: block;
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--card-hover-bg);
+    color: var(--primary-color);
 }
 
 .queue-item {
@@ -172,6 +174,7 @@ footer {
     display: flex;
     align-items: center;
     border-radius: 8px;
+    background-color: #363636;
 }
 
 .position-number {
@@ -179,9 +182,9 @@ footer {
     left: 1rem;
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--card-hover-bg);
+    color: var(--primary-color);
     padding: 0.5rem;
-    border: 2px solid var(--card-hover-bg);
+    border: 2px solid var(--primary-color);
     border-radius: 8px;
 }
 
@@ -193,15 +196,36 @@ footer {
 .patient-id {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--card-hover-bg);
+    color: var(--secondary-color);
 }
 
 .wait-time {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--card-hover-bg);
+    color: var(--primary-color);
     position: absolute;
     right: 1rem;
     min-width: 120px;
     text-align: center;
+}
+
+/* CSS */
+.logo {
+    width: 200px; /* Adjust to your logo size */
+    height: auto;
+    margin: 0 auto;
+}
+
+/* Hide dark logo by default (light mode) */
+.logo-dark {
+    display: none;
+}
+
+/* Show dark logo in dark mode */
+body.dark-mode .logo-light {
+    display: none;
+}
+
+body.dark-mode .logo-dark {
+    display: block;
 }
