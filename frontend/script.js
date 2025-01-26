@@ -25,6 +25,7 @@ let queueData = null;
 let simulatedPatients = [];
 
 function formatWaitTime(minutes) {
+    if (minutes < 0) return "0 min"; // Show 0 instead of negative
     if (minutes < 60) return `${minutes} min`;
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
@@ -32,9 +33,7 @@ function formatWaitTime(minutes) {
 }
 
 function getRandomWaitTime(category) {
-    // Multiplier to make wait times longer (5 minutes real time = 1 second simulation)
-    const TIME_MULTIPLIER = 5;
-    
+    // REMOVE THE MULTIPLIER
     const waitRanges = {
         1: [10, 30],       // Resuscitation: 10-30 mins
         2: [30, 90],       // Emergent: 30-90 mins
@@ -44,26 +43,31 @@ function getRandomWaitTime(category) {
     };
     
     const [min, max] = waitRanges[category];
-    return Math.floor((Math.random() * (max - min + 1) + min) * TIME_MULTIPLIER);
+    return Math.floor(Math.random() * (max - min + 1) + min); // No multiplier
 }
 
 function processQueue() {
     if (!simulatedPatients.length) return;
 
-    // Process all patients
+    // Increment wait time for all patients
     simulatedPatients.forEach(patient => {
         patient.time_elapsed += 1;
     });
 
-    // Remove patients who have reached their target wait time
-    simulatedPatients = simulatedPatients.filter(patient => 
-        patient.time_elapsed < patient.targetWaitTime
+    // Sort by remaining time ascending (patients closest to 0 go first)
+    simulatedPatients.sort((a, b) => {
+        const aRemaining = a.targetWaitTime - a.time_elapsed;
+        const bRemaining = b.targetWaitTime - b.time_elapsed;
+        return aRemaining - bRemaining; // 🚨 Sort by least time left
+    });
+
+    // Remove ALL patients who have reached/passed their target time
+    const remainingPatients = simulatedPatients.filter(
+        patient => patient.time_elapsed < patient.targetWaitTime
     );
-    
-    // Update UI only if there are changes
+    simulatedPatients = remainingPatients; // Update the queue
+
     updateQueueUI();
-    
-    // Update total waiting count
     document.getElementById("total-waiting").textContent = simulatedPatients.length;
 }
 
@@ -74,13 +78,11 @@ async function updateQueue() {
         queueData = await response.json();
         simulatedPatients = queueData.patients;
         
-        // Assign target wait times to all patients
         simulatedPatients.forEach(patient => {
             patient.targetWaitTime = getRandomWaitTime(patient.triage_category);
         });
         
         updateQueueUI();
-        // Clear existing interval if any
         if (window.queueInterval) clearInterval(window.queueInterval);
         window.queueInterval = setInterval(processQueue, 1000);
     } catch (error) {
@@ -94,23 +96,31 @@ function updateQueueUI() {
     
     const queueList = document.getElementById("queue-list");
     const waitTimeEl = document.getElementById("wait-time");
-    const userCategory = 3; // URGENT (Yellow)
     
     document.getElementById("total-waiting").textContent = simulatedPatients.length;
     const longestWait = Math.max(...simulatedPatients.map(p => p.time_elapsed));
     document.getElementById("estimated-time").textContent = formatWaitTime(longestWait);
     
-    // Show all patients, not just category 3
-    queueList.innerHTML = simulatedPatients
-        .map((patient, index) => `
-            <li class="queue-item">
-                <div class="position-number">${index + 1}</div>
-                <div class="patient-info">
-                    <span class="patient-id">Patient ${patient.id}</span>
-                </div>
-                <div class="wait-time">${formatWaitTime(patient.time_elapsed)}</div>
-            </li>
-        `).join('');
+    // Sort patients by remaining time (ascending)
+    const sortedPatients = [...simulatedPatients].sort((a, b) => {
+        const aRemaining = a.targetWaitTime - a.time_elapsed;
+        const bRemaining = b.targetWaitTime - b.time_elapsed;
+        return aRemaining - bRemaining; // 🚨 Least time left first
+    });
+    
+    queueList.innerHTML = sortedPatients
+        .map((patient, index) => {
+            const remainingTime = Math.max(0, patient.targetWaitTime - patient.time_elapsed);
+            return `
+                <li class="queue-item">
+                    <div class="position-number">${index + 1}</div>
+                    <div class="patient-info">
+                        <span class="patient-id">Patient ${patient.id}</span>
+                    </div>
+                    <div class="wait-time">${formatWaitTime(remainingTime)}</div>
+                </li>
+            `;
+        }).join('');
     
     const avgWait = simulatedPatients.length ? 
         simulatedPatients.reduce((sum, p) => sum + p.time_elapsed, 0) / simulatedPatients.length : 
