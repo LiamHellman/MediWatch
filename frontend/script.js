@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Dark mode toggle
     const darkModeToggle = document.getElementById("dark-mode-toggle");
     const currentMode = localStorage.getItem("darkMode");
 
@@ -17,54 +16,106 @@ document.addEventListener("DOMContentLoaded", () => {
         darkModeToggle.textContent = mode === "enabled" ? "☀️" : "🌙";
     });
 
-    // Initialize UI elements and start updates
     updateQueue();
     loadTrivia();
-    setInterval(updateQueue, 30000);
     document.getElementById("next-trivia").addEventListener("click", loadTrivia);
 });
+
+let queueData = null;
+let simulatedPatients = [];
+
+function formatWaitTime(minutes) {
+    if (minutes < 60) return `${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours}h ${remainingMinutes}m`;
+}
+
+function getRandomWaitTime(category) {
+    // Multiplier to make wait times longer (5 minutes real time = 1 second simulation)
+    const TIME_MULTIPLIER = 5;
+    
+    const waitRanges = {
+        1: [10, 30],       // Resuscitation: 10-30 mins
+        2: [30, 90],       // Emergent: 30-90 mins
+        3: [90, 180],      // Urgent: 90-180 mins
+        4: [180, 360],     // Less Urgent: 3-6 hours
+        5: [360, 720]      // Non-Urgent: 6-12 hours
+    };
+    
+    const [min, max] = waitRanges[category];
+    return Math.floor((Math.random() * (max - min + 1) + min) * TIME_MULTIPLIER);
+}
+
+function processQueue() {
+    if (!simulatedPatients.length) return;
+
+    // Process all patients
+    simulatedPatients.forEach(patient => {
+        patient.time_elapsed += 1;
+    });
+
+    // Remove patients who have reached their target wait time
+    simulatedPatients = simulatedPatients.filter(patient => 
+        patient.time_elapsed < patient.targetWaitTime
+    );
+    
+    // Update UI only if there are changes
+    updateQueueUI();
+    
+    // Update total waiting count
+    document.getElementById("total-waiting").textContent = simulatedPatients.length;
+}
 
 async function updateQueue() {
     try {
         const response = await fetch('http://localhost:3000/api/v1/queue');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        updateQueueUI(data);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        queueData = await response.json();
+        simulatedPatients = queueData.patients;
+        
+        // Assign target wait times to all patients
+        simulatedPatients.forEach(patient => {
+            patient.targetWaitTime = getRandomWaitTime(patient.triage_category);
+        });
+        
+        updateQueueUI();
+        // Clear existing interval if any
+        if (window.queueInterval) clearInterval(window.queueInterval);
+        window.queueInterval = setInterval(processQueue, 1000);
     } catch (error) {
         console.error("Error:", error);
         document.getElementById("queue-list").innerHTML = '<li class="error">Error loading queue data</li>';
     }
 }
 
-function updateQueueUI(data) {
+function updateQueueUI() {
+    if (!simulatedPatients) return;
+    
     const queueList = document.getElementById("queue-list");
     const waitTimeEl = document.getElementById("wait-time");
     const userCategory = 3; // URGENT (Yellow)
     
-    // Update waiting count and time
-    document.getElementById("total-waiting").textContent = data.waitingCount;
-    document.getElementById("longest-wait").textContent = `${data.longestWaitTime} min`;
+    document.getElementById("total-waiting").textContent = simulatedPatients.length;
+    const longestWait = Math.max(...simulatedPatients.map(p => p.time_elapsed));
+    document.getElementById("estimated-time").textContent = formatWaitTime(longestWait);
     
-    // Filter and display patients
-    const relevantPatients = data.patients.filter(p => p.triage_category === userCategory);
+    // Show all patients, not just category 3
+    queueList.innerHTML = simulatedPatients
+        .map((patient, index) => `
+            <li class="queue-item">
+                <div class="position-number">${index + 1}</div>
+                <div class="patient-info">
+                    <span class="patient-id">Patient ${patient.id}</span>
+                </div>
+                <div class="wait-time">${formatWaitTime(patient.time_elapsed)}</div>
+            </li>
+        `).join('');
     
-    queueList.innerHTML = relevantPatients.map(patient => `
-        <li class="queue-item">
-            <div class="patient-info">
-                <span class="patient-id">Patient ${patient.id}</span>
-                <span class="wait-time">${patient.time_elapsed} min wait</span>
-            </div>
-            <div class="patient-status">
-                Status: ${patient.status.current_phase}
-            </div>
-        </li>
-    `).join('');
-    
-    // Update average wait time
-    const avgWait = relevantPatients.reduce((sum, p) => sum + p.time_elapsed, 0) / relevantPatients.length;
-    waitTimeEl.textContent = `${Math.round(avgWait)} minutes`;
+    const avgWait = simulatedPatients.length ? 
+        simulatedPatients.reduce((sum, p) => sum + p.time_elapsed, 0) / simulatedPatients.length : 
+        0;
+    waitTimeEl.textContent = formatWaitTime(Math.round(avgWait));
 }
 
 async function loadTrivia() {
