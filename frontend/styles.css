@@ -253,3 +253,17 @@ body.dark-mode .logo-dark {
     background: #ff4444;
     transform: scale(1.1);
 }
+
+.last-patient {
+    background-color: #926AA0 !important;
+}
+
+.last-patient .patient-id,
+.last-patient .wait-time {
+    color: white !important;
+}
+
+.last-patient .position-number {
+    color: white !important;
+    border-color: white !important;
+}

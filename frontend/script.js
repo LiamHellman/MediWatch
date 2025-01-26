@@ -134,8 +134,9 @@ function updateQueueUI() {
     queueList.innerHTML = sortedPatients
         .map((patient, index) => {
             const remainingTime = Math.max(0, patient.targetWaitTime - patient.time_elapsed);
+            const isLastPatient = index === sortedPatients.length - 1;
             return `
-                <li class="queue-item">
+                <li class="queue-item ${isLastPatient ? 'last-patient' : ''}">
                     <div class="position-number">${index + 1}</div>
                     <div class="patient-info">
                         <span class="patient-id">Patient ${patient.id}</span>
