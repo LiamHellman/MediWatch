@@ -20,22 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTrivia();
     document.getElementById("next-trivia").addEventListener("click", loadTrivia);
 
-    // Wordle setup
     setupWordle();
 });
 
 let queueData = null;
 let simulatedPatients = [];
 
-// Format wait time utility function
+// Utility to format wait time
 function formatWaitTime(minutes) {
-    if (minutes < 0) return "0 min"; // Show 0 instead of negative
+    if (minutes < 0) return "0 min";
     if (minutes < 60) return `${minutes} min`;
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return `${hours}h ${remainingMinutes}m`;
 }
 
+// Generate staggered wait times based on triage categories
 function generateIncrementalWaitTimes(patients) {
     const waitRanges = {
         1: [10, 30],
@@ -53,7 +53,6 @@ function generateIncrementalWaitTimes(patients) {
     });
 
     let cumulativeTime = 0;
-
     patients.forEach(patient => {
         const [min, max] = waitRanges[patient.triage_category];
         const increment = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -169,7 +168,7 @@ async function loadTrivia() {
     }
 }
 
-// Wordle game implementation
+// Wordle implementation
 function setupWordle() {
     const wordleInput = document.getElementById("wordle-input");
     const submitWordleButton = document.getElementById("submit-wordle");
@@ -218,26 +217,24 @@ function setupWordle() {
         const currentRow = attempts.length;
         const tiles = Array.from(wordleGrid.children).slice(currentRow * 5, currentRow * 5 + 5);
 
-        const targetLetters = targetWord.split(""); // Split target word into an array
-        const guessedLetters = guess.split(""); // Split guess into an array
+        const targetLetters = targetWord.split("");
+        const guessedLetters = guess.split("");
 
-        // First pass: Check for correct letters in the right position (green)
         guessedLetters.forEach((letter, index) => {
             if (letter === targetLetters[index]) {
                 tiles[index].textContent = letter;
                 tiles[index].classList.add("correct");
-                targetLetters[index] = null; // Mark letter as used
-                guessedLetters[index] = null; // Prevent further processing
+                targetLetters[index] = null;
+                guessedLetters[index] = null;
             }
         });
 
-        // Second pass: Check for correct letters in the wrong position (yellow)
         guessedLetters.forEach((letter, index) => {
             if (letter && targetLetters.includes(letter)) {
                 const targetIndex = targetLetters.indexOf(letter);
                 tiles[index].textContent = letter;
                 tiles[index].classList.add("present");
-                targetLetters[targetIndex] = null; // Mark letter as used
+                targetLetters[targetIndex] = null;
             } else if (letter) {
                 tiles[index].textContent = letter;
                 tiles[index].classList.add("absent");
