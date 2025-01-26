@@ -135,6 +135,8 @@ def save(self, db: 'PatientDB'):
     """Save patient to database"""
     db.add_patient(self)
 
+
+
 @staticmethod
 def get_all(db: 'PatientDB') -> list['Patient']:
     """Retrieve all patients from database"""

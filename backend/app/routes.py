@@ -39,6 +39,20 @@ def get_queue():
         'patients': [{**p.serialize(), 'eta': p.eta} for p in patients]
     })
 
+@app.route('/api/v1/patient/<id>', methods=['GET', 'DELETE'])
+def patient_endpoint(id):
+    if request.method == 'DELETE':
+        try:
+            db.delete_patient(id)
+            return jsonify({"message": "Patient deleted successfully"}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    else:
+        patient = Patient.get_by_id(db, id)
+        if patient:
+            return jsonify(patient.serialize())
+        return jsonify({"error": "Patient not found"}), 404
+
 @app.route('/api/v1/patient', methods=['POST'])
 def add_patient():
     data = request.get_json()

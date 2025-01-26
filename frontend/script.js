@@ -123,7 +123,7 @@ function updateQueueUI() {
     const sortedPatients = [...simulatedPatients].sort((a, b) => {
         const aRemaining = a.targetWaitTime - a.time_elapsed;
         const bRemaining = b.targetWaitTime - b.time_elapsed;
-        return aRemaining - bRemaining; // 🚨 Least time left first
+        return aRemaining - bRemaining; // Least time left first
     });
     
     queueList.innerHTML = sortedPatients
@@ -136,6 +136,7 @@ function updateQueueUI() {
                         <span class="patient-id">Patient ${patient.id}</span>
                     </div>
                     <div class="wait-time">${formatWaitTime(remainingTime)}</div>
+                    <button onclick="deletePatient('${patient.id}')" class="delete-btn">×</button>
                 </li>
             `;
         }).join('');
@@ -144,6 +145,20 @@ function updateQueueUI() {
         simulatedPatients.reduce((sum, p) => sum + p.time_elapsed, 0) / simulatedPatients.length : 
         0;
     waitTimeEl.textContent = formatWaitTime(Math.round(avgWait));
+}
+
+async function deletePatient(id) {
+    try {
+        console.log('Attempting to delete patient:', id);
+        const response = await fetch(`http://localhost:3000/api/v1/patient/${id}`, {
+            method: 'DELETE'
+        });
+        console.log('Delete response:', response);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        await updateQueue(); // Refresh the queue after deletion
+    } catch (error) {
+        console.error("Error deleting patient:", error);
+    }
 }
 
 async function loadTrivia() {
