@@ -43,24 +43,7 @@ def generate_mock_patient_id():
     return f'anon_{random.randint(1000, 9999)}'
 
 def generate_mock_triage_category():
-    # Triage distributions are roughly:
-    # CTAS 1: 1%
-    # CTAS 2: 15%
-    # CTAS 3: 45%
-    # CTAS 4: 30%
-    # CTAS 5: 9%
-    roll = random.random() * 100
-    
-    if roll < 1:
-        return TriageCategory.RESUSCITATION
-    elif roll < 16:
-        return TriageCategory.EMERGENT
-    elif roll < 61:
-        return TriageCategory.URGENT
-    elif roll < 91:
-        return TriageCategory.LESS_URGENT
-    else:
-        return TriageCategory.NON_URGENT
+    return TriageCategory.URGENT  # Only generate category 3 patients
 
 def generate_mock_wait_time(triage_category) -> int:
     # Average wait times by category (in minutes):

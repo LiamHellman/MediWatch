@@ -32,9 +32,7 @@ function formatWaitTime(minutes) {
 }
 
 function getRandomWaitTime(category) {
-    // Multiplier to make wait times longer (5 minutes real time = 1 second simulation)
-    const TIME_MULTIPLIER = 5;
-    
+    // REMOVE THE MULTIPLIER
     const waitRanges = {
         1: [10, 30],       // Resuscitation: 10-30 mins
         2: [30, 90],       // Emergent: 30-90 mins
@@ -44,26 +42,25 @@ function getRandomWaitTime(category) {
     };
     
     const [min, max] = waitRanges[category];
-    return Math.floor((Math.random() * (max - min + 1) + min) * TIME_MULTIPLIER);
+    return Math.floor(Math.random() * (max - min + 1) + min); // No multiplier
 }
 
 function processQueue() {
     if (!simulatedPatients.length) return;
 
-    // Process all patients
     simulatedPatients.forEach(patient => {
         patient.time_elapsed += 1;
     });
 
-    // Remove patients who have reached their target wait time
-    simulatedPatients = simulatedPatients.filter(patient => 
-        patient.time_elapsed < patient.targetWaitTime
-    );
+    // Sort by arrival time (FIFO)
+    simulatedPatients.sort((a, b) => a.time_elapsed - b.time_elapsed);
+
+    // Check and remove ONLY the front patient if ready
+    if (simulatedPatients[0] && simulatedPatients[0].time_elapsed >= simulatedPatients[0].targetWaitTime) {
+        simulatedPatients.shift();
+    }
     
-    // Update UI only if there are changes
     updateQueueUI();
-    
-    // Update total waiting count
     document.getElementById("total-waiting").textContent = simulatedPatients.length;
 }
 
@@ -74,13 +71,11 @@ async function updateQueue() {
         queueData = await response.json();
         simulatedPatients = queueData.patients;
         
-        // Assign target wait times to all patients
         simulatedPatients.forEach(patient => {
             patient.targetWaitTime = getRandomWaitTime(patient.triage_category);
         });
         
         updateQueueUI();
-        // Clear existing interval if any
         if (window.queueInterval) clearInterval(window.queueInterval);
         window.queueInterval = setInterval(processQueue, 1000);
     } catch (error) {
@@ -94,14 +89,15 @@ function updateQueueUI() {
     
     const queueList = document.getElementById("queue-list");
     const waitTimeEl = document.getElementById("wait-time");
-    const userCategory = 3; // URGENT (Yellow)
     
     document.getElementById("total-waiting").textContent = simulatedPatients.length;
     const longestWait = Math.max(...simulatedPatients.map(p => p.time_elapsed));
     document.getElementById("estimated-time").textContent = formatWaitTime(longestWait);
     
-    // Show all patients, not just category 3
-    queueList.innerHTML = simulatedPatients
+    // Sort patients by wait time in descending order
+    const sortedPatients = [...simulatedPatients].sort((a, b) => b.time_elapsed - a.time_elapsed);
+    
+    queueList.innerHTML = sortedPatients
         .map((patient, index) => `
             <li class="queue-item">
                 <div class="position-number">${index + 1}</div>
