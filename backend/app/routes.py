@@ -38,3 +38,21 @@ def get_queue():
         'waitingCount': len(patients),
         'patients': [{**p.serialize(), 'eta': p.eta} for p in patients]
     })
+
+@app.route('/api/v1/patient', methods=['POST'])
+def add_patient():
+    data = request.get_json()
+    name = data.get('name')
+    
+    if not name:
+        return jsonify({"error": "Name is required"}), 400
+    
+    # Generate a mock patient with the provided name
+    patient = generate_mock_patient()
+    patient.id = name  # Assign the provided name as the patient ID for simplicity
+    
+    try:
+        db.add_patient(patient)
+        return jsonify({"message": "Patient added successfully!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
