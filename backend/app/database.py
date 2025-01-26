@@ -86,6 +86,11 @@ class PatientDB:
                 'imaging': InvestigationState(status_dict['investigations']['imaging'])
             }
         return status_dict
-
+    
+    def delete_patient(self, patient_id: str):
+        with self.get_connection() as conn:
+            conn.execute('DELETE FROM patients WHERE id = ?', (patient_id,))
+            conn.commit()
+        
     def close(self):
         self.conn.close()

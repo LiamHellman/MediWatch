@@ -229,3 +229,25 @@ body.dark-mode .logo-light {
 body.dark-mode .logo-dark {
     display: block;
 }
+
+.delete-btn {
+    position: absolute;
+    right: 150px;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    color: var(--bg-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: #ff4444;
+    transform: scale(1.1);
+}
