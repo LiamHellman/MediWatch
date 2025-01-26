@@ -15,6 +15,14 @@ class Patient:
     status: dict
     time_elapsed: int
 
+    @staticmethod
+    def get_all(db):
+        return db.get_all_patients()
+
+    @staticmethod
+    def get_by_id(db, patient_id):
+        return db.get_patient(patient_id)
+    
     def serialize(self):
         """Convert patient to JSON-serializable dict."""
         serialized = {**self.__dict__}

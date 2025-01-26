@@ -13,11 +13,12 @@ from .enums import PatientPhase, InvestigationState, TriageCategory
 
 class PatientDB:
     def __init__(self, db_name='ed_tracker.db'):
-        base_dir = Path(__file__).parent.parent  # Points to /backend
+        base_dir = Path(__file__).parent.parent
         self.db_path = os.path.join(base_dir, db_name)
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
-        self.conn = sqlite3.connect(self.db_path)
 
+    def get_connection(self):
+        return sqlite3.connect(self.db_path)
     def create_tables(self):
         self.conn.execute('''CREATE TABLE IF NOT EXISTS patients (
                             id TEXT PRIMARY KEY,
@@ -29,18 +30,17 @@ class PatientDB:
                         )''')
         self.conn.commit()
 
-    def add_patient(self, patient: Patient):
-        """Insert a new patient into the database"""
-        self.conn.execute('''INSERT INTO patients 
-                          (id, arrival_time, triage_category, queue_position, status, time_elapsed)
-                          VALUES (?, ?, ?, ?, ?, ?)''',
-                          (patient.id,
-                           patient.arrival_time.isoformat(),
-                           patient.triage_category.value,
-                           json.dumps(patient.queue_position),
-                           json.dumps(self.serialize_status(patient.status)),
-                           patient.time_elapsed))
-        self.conn.commit()
+    def add_patient(self, patient):
+        with self.get_connection() as conn:
+            conn.execute('''INSERT INTO patients 
+                        (id, arrival_time, triage_category, queue_position, status, time_elapsed)
+                        VALUES (?, ?, ?, ?, ?, ?)''',
+                        (patient.id,
+                         patient.arrival_time.isoformat(),
+                         patient.triage_category.value,
+                         json.dumps(patient.queue_position),
+                         json.dumps(self.serialize_status(patient.status)),
+                         patient.time_elapsed))
 
     def get_patient(self, patient_id: str) -> Patient:
         """Retrieve a single patient by ID"""
@@ -48,10 +48,10 @@ class PatientDB:
         row = cursor.fetchone()
         return self._row_to_patient(row) if row else None
 
-    def get_all_patients(self) -> list[Patient]:
-        """Retrieve all patients in the database"""
-        cursor = self.conn.execute('SELECT * FROM patients')
-        return [self._row_to_patient(row) for row in cursor.fetchall()]
+    def get_all_patients(self):
+        with self.get_connection() as conn:
+            cursor = conn.execute('SELECT * FROM patients')
+            return [self._row_to_patient(row) for row in cursor.fetchall()]
 
     def _row_to_patient(self, row) -> Patient:
         """Convert database row to Patient object"""
