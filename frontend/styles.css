@@ -1,19 +1,21 @@
 :root {
-    --bg-color: #242424;
-    --text-color: #E0E0E0;
-    --card-bg: #242424;
-    --card-hover-bg: #451B60;
-    --primary-color: #933DC9;
-    --secondary-color: #933DC9;
+    --bg-color: #f1e0c5;
+    --text-color: #36151e;
+    --card-bg: #f0ebd8;
+    --card-hover-bg: #593f62;
+    --primary-color: #7b6d8d;
+    --secondary-color: #f0ebd8;
 }
+
 body.dark-mode {
-    --bg-color: #E0E0E0;
-    --text-color: #242424;
-    --card-bg: #;
-    --card-hover-bg: #DEC4EF;
-    --primary-color: #933DC9;
-    --secondary-color: #933DC9;
+    --bg-color: #242424;
+    --text-color: #f1e0c5;
+    --card-bg: #36151e;
+    --card-hover-bg: #593f62;
+    --primary-color: #7b6d8d;
+    --secondary-color: #f0ebd8;
 }
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: var(--bg-color);
@@ -35,7 +37,6 @@ body {
     overflow: hidden;
 }
 
-/* Header */
 header {
     text-align: center;
     margin-bottom: 20px;
@@ -46,7 +47,6 @@ header h1 {
     color: var(--primary-color);
 }
 
-/* Dark mode toggle icon */
 #dark-mode-toggle {
     position: absolute;
     top: 20px;
@@ -63,7 +63,6 @@ header h1 {
     transform: scale(1.2);
 }
 
-/* Sections */
 main {
     display: grid;
     grid-template-columns: 1fr;
@@ -71,21 +70,22 @@ main {
 }
 
 .card {
-    background-color: var(--card-hover-bg);
+    background-color: #7b6d8d;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
 }
 
 .card:hover {
     transform: translateY(-5px);
+    background-color: var(--card-hover-bg);
 }
 
 .card h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
-    color: var(--secondary-color);
+    color: #000000;
 }
 
 .card h3 {
@@ -108,7 +108,6 @@ main {
     color: var(--text-color);
 }
 
-/* Trivia Section */
 #trivia-section p {
     margin-bottom: 20px;
     font-size: 1rem;
@@ -129,16 +128,13 @@ main {
     background-color: var(--secondary-color);
 }
 
-/* Dark Mode Overrides */
-
-
-/* Footer */
 footer {
     text-align: center;
     margin-top: 20px;
     font-size: 0.9rem;
     color: #666;
 }
+
 .queue-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -151,12 +147,13 @@ footer {
     padding: 1rem;
     border-radius: 8px;
     text-align: center;
+    border: 2px solid var(--card-hover-bg);
 }
 
 .stat-label {
     display: block;
     font-size: 0.875rem;
-    color: var(--text-color);
+    color: var(--card-hover-bg);
     opacity: 0.8;
 }
 
@@ -164,6 +161,47 @@ footer {
     display: block;
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--primary-color);
+    color: var(--card-hover-bg);
 }
 
+.queue-item {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.position-number {
+    position: absolute;
+    left: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--card-hover-bg);
+    padding: 0.5rem;
+    border: 2px solid var(--card-hover-bg);
+    border-radius: 8px;
+}
+
+.patient-info {
+    width: 100%;
+    text-align: center;
+}
+
+.patient-id {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--card-hover-bg);
+}
+
+.wait-time {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--card-hover-bg);
+    position: absolute;
+    right: 1rem;
+    min-width: 120px;
+    text-align: center;
+}
