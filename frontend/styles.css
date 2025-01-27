@@ -211,19 +211,16 @@ footer {
     text-align: center;
 }
 
-/* CSS */
 .logo {
-    width: 200px; /* Adjust to your logo size */
+    width: 200px;
     height: auto;
     margin: 0 auto;
 }
 
-/* Hide dark logo by default (light mode) */
 .logo-dark {
     display: none;
 }
 
-/* Show dark logo in dark mode */
 body.dark-mode .logo-light {
     display: none;
 }
@@ -253,8 +250,24 @@ body.dark-mode .logo-dark {
     background: #ff4444;
     transform: scale(1.1);
 }
-<<<<<<< HEAD
+
+.last-patient {
+    background-color: #926AA0 !important;
+}
+
+.last-patient .patient-id,
+.last-patient .wait-time {
+    color: white !important;
+}
+
+.last-patient .position-number {
+    color: white !important;
+    border-color: white !important;
+}
+
 #wordle-section {
+    justify-content: center;
+    align-items: center;
     text-align: center;
 }
 
@@ -307,19 +320,51 @@ body.dark-mode .logo-dark {
     color: var(--primary-color);
     font-weight: bold;
 }
-=======
 
-.last-patient {
-    background-color: #926AA0 !important;
-}
+@media screen and (max-width: 600px) {
+    .queue-item {
+        padding: 0.25rem;
+        height: 2.5rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-.last-patient .patient-id,
-.last-patient .wait-time {
-    color: white !important;
-}
+    .position-number {
+        font-size: 0.85rem;
+        padding: 0.2rem;
+        position: absolute;
+        left: 0.35rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.last-patient .position-number {
-    color: white !important;
-    border-color: white !important;
+    .patient-info {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+    }
+
+    .patient-id {
+        font-size: 0.85rem;
+    }
+
+    .wait-time {
+        font-size: 0.85rem;
+        min-width: 70px;
+        position: absolute;
+        right: 0.35rem;
+    }
+
+    .delete-btn {
+        width: 18px;
+        height: 18px;
+        font-size: 0.85rem;
+        right: 80px;
+    }
 }
->>>>>>> bde40d14a969fe8bc3f8a150f26dbe0bdb47499d

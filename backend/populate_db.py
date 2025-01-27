@@ -5,7 +5,7 @@ import random
 import json
 from app.enums import TriageCategory  # Import the enum
 
-def populate_database(num_patients=50):
+def populate_database(num_patients=9):
     db = PatientDB(db_name='ed_tracker.db')
     with db.get_connection() as conn:
         conn.execute('DROP TABLE IF EXISTS patients')
